@@ -1,4 +1,5 @@
 #include <Servo.h>
+#include "Flex.h"
 
 Servo myservo;
 int angle = 0;
@@ -6,6 +7,12 @@ int newAngle = 0;
 const int MaxChars = 4;
 char strValue[MaxChars+1];
 int index = 0;
+
+
+char sensor;
+short count = 0;
+char test = "test";
+Flex flex = Flex(0);
 
 //void serialEvent()
 //{
@@ -38,11 +45,32 @@ int index = 0;
 void setup()
 {
   Serial.begin(57600);
-  myservo.attach(10);
-  angle = 90;  
+//  myservo.attach(10);
+//  angle = 90;  
+
+
 }
 
 void loop()
 {
-    Serial.println("Band Camp");
+    while(Serial.available()){
+      char sensor = Serial.read();
+      if(sensor == '0'){
+        Serial.println("Flex");
+        //Serial.write("wha4");
+        delay(1000);
+      }else if (sensor == '1'){
+        Serial.println("Force");
+        //Serial.write("wha5");
+        delay(1000);
+      }else{
+        Serial.println("Not an option");
+        Serial.println(sensor);
+      }
+    }
+    count++;
+//    //while(count < 5){
+    Serial.write(test);
+//    delay(1000);
+    //}
 }
