@@ -26,15 +26,18 @@ try:
     if sensor == "FLEX":
 #        ser.write(b'0');
         print "yay its flex";
-    else:
+    else if sensor == "FORCE":
 #        ser.write(b'1');
         print "yahoo its force";
+    else:
+      print "Oops bad sensor";
+      sys.exit(1);
 
 #    time.sleep(3)
     while True:
         try:
             print ser.read(1);
-            time.sleep(1);
+            time.sleep(1/100);
         except: 
             ser.SerialTimeoutException;
             print 'Data could not be read';

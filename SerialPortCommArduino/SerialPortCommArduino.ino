@@ -6,6 +6,7 @@
 #define FAST 10
 
 /* valid 'sensor' is a character '1' or '2' */
+//force == 1, flex == 2
 char sensor = '0';
 
 void setup(){
