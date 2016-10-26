@@ -1,9 +1,12 @@
 #include <MsTimer2.h>
 #include <Streaming.h>
+#include <Arduino.h>
 
 #define DELAY 100
 #define SLOW 500
 #define FAST 10
+#define FLEX_PIN A1
+#define PIEZO_PIN A0
 
 /* valid 'sensor' is a character '1' or '2' */
 //force == 1, flex == 2
@@ -11,16 +14,16 @@ char sensor = '0';
 
 void setup(){
   Serial.begin(57600);
+  pinMode(FLEX_PIN, INPUT);
 }
 
 void readSensor(){
   if( sensor == '1' ){
     //Read from first sensor
-    //Serial.println(analogRead(0), DEC);
-    Serial.println("Reading from sensor '1'");
+    Serial << analogRead(PIEZO_PIN) << endl;
   }else if( sensor == '2' ){
     //Read from second sensor
-    Serial.println("Reading from sensor '2'");
+    Serial << analogRead(FLEX_PIN) << endl;
   }
 }
 
@@ -52,6 +55,5 @@ void loop(){
       //stop reading
       MsTimer2::stop();
     }
-
     delay(DELAY);
 }
