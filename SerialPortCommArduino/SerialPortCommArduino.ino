@@ -7,7 +7,7 @@
 #define FAST 10
 #define FLEX_PIN A1
 #define PIEZO_PIN A0
-
+#define INDICATOR 7
 /* valid 'sensor' is a character '1' or '2' */
 //force == 1, flex == 2
 char sensor = '0';
@@ -15,12 +15,15 @@ char sensor = '0';
 void setup(){
   Serial.begin(57600);
   pinMode(FLEX_PIN, INPUT);
+  pinMode(INDICATOR, OUTPUT);
+  digitalWrite(INDICATOR, LOW);
 }
 
 void readSensor(){
+  digitalWrite(INDICATOR, HIGH);
   if( sensor == '1' ){
     //Read from first sensor
-    Serial << analogRead(PIEZO_PIN) << endl;
+    Serial << analogRead(PIEZO_PIN) << '\n';
   }else if( sensor == '2' ){
     //Read from second sensor
     Serial << analogRead(FLEX_PIN) << endl;
@@ -46,6 +49,7 @@ void loop(){
           rate = FAST;
         }
         //start reading;
+        digitalWrite(INDICATOR, LOW);
         MsTimer2::stop();
         MsTimer2::set( rate, readSensor );
         MsTimer2::start();
@@ -53,6 +57,7 @@ void loop(){
       
     }else if( cmd == 'S' ){
       //stop reading
+      digitalWrite(INDICATOR, LOW);
       MsTimer2::stop();
     }
     delay(DELAY);

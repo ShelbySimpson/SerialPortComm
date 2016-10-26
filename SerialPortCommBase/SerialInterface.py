@@ -1,51 +1,56 @@
-import serial;
-import time;
-import sys;
+#! /bin/python2
 
-#atenbyte = ser.read(9);
-#print atenbyte;
+import serial
+from time import sleep
+import sys
+import os
+import signal
 
+def usage():
+  print( "usage: /base.py serial_port sensor rate")
+  print( "    serial_port   = 'COMX' | '/dev/tty.usbXXXX'")
+  print( "    sensor        = 'FLEX' | 'FORCE'")
+  print( "    sampling rate = 'S' | 'F'")
+ 
+sigHand = True;
+
+def signal_handler(signal, frame):
+  sigHand = False
+  ser.write(b'S')
+  ser.close()
+  os._exit(0)
+
+def serPrint(ser):
+  while sigHand:
+    #python's print() sucks
+    sys.stdout.write( ser.read() )
+    sys.stdout.flush()
+
+signal.signal(signal.SIGINT, signal_handler)
 try:
-#for arg in sys.argv:
-    #print arg;
     if len(sys.argv) != 4:
-        print "usage: /base.py serial_port sensor sampling_rate";
-        print "serial_port   = 'COMX' | '/dev/tty.usbXXXX'";
-        print "sensor        = 'FLEX' | 'FORCE'";
-        print "sampling rate = '5' | '50'";
+        usage()
+        os._exit(1)
     else:
         serial_port = sys.argv[1];
         sensor = sys.argv[2];
-        sampling_rate = sys.argv[3];
+        rate = sys.argv[3];
 
-    if sensor != "FLEX" and sensor != "FORCE":
-        print sensor, "is an invalid sensor: sensor =  FLEX | FORCE";
-        quit();#check to see about best way to exit system
+    if sensor != "FLEX" and sensor != "FORCE" or rate != 'S' and rate !='F':
+        usage()
+        os._exit(1)
 
-    ser = serial .Serial(serial_port,57600);
+    ser = serial.Serial(serial_port, 57600, timeout=0);
+    sleep(2)
     if sensor == "FLEX":
-#        ser.write(b'0');
-        print "yay its flex";
-    else if sensor == "FORCE":
-#        ser.write(b'1');
-        print "yahoo its force";
+      ser.write(b'R2S')
+      serPrint(ser)
+    elif sensor == "FORCE":
+      ser.write('R1S');
+      serPrint(ser)
     else:
-      print "Oops bad sensor";
-      sys.exit(1);
-
-#    time.sleep(3)
-    while True:
-        try:
-            print ser.read(1);
-            time.sleep(1/100);
-        except: 
-            ser.SerialTimeoutException;
-            print 'Data could not be read';
-        time.sleep(1);
-        #print  ser.read();
-    #sout = ser.read(2);
-    #time.sleep(3);
-    #print sout;
+        usage()
+        os._exit(1)
 
 except:
-    print "unexpected error:", sys.exc_info();
+    print( "unexpected error:"), sys.exc_info();
