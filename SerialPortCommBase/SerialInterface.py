@@ -93,7 +93,7 @@ try:
       ser.write(initData);#write
       handleSensorData(ser)#handle incoming data
     else:
-        usage();#invalid input, notify user
+        usage();#invalid input,notify user
         os._exit(1);#exit program
 
 except:
